@@ -1,0 +1,24 @@
+{
+  "name": "mock-server-demo",
+  "version": "1.0.0",
+  "description": "Combined React & Node.js Mock Server - Ready for Demo",
+  "main": "server/server.js",
+  "scripts": {
+    "dev": "concurrently \"npm run server\" \"npm run client\"",
+    "server": "cd server && npm run dev",
+    "client": "cd client && npm start",
+    "build": "cd client && npm run build",
+    "start": "cd server && npm start",
+    "install-all": "npm install && cd server && npm install && cd ../client && npm install",
+    "heroku-postbuild": "npm run build"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.0"
+  },
+  "engines": {
+    "node": ">=14.0.0"
+  },
+  "keywords": ["mock-server", "api", "testing", "demo", "react", "nodejs"],
+  "author": "Your Name",
+  "license": "MIT"
+}
