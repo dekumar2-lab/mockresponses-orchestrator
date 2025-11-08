@@ -737,10 +737,12 @@ const App = () => {
           --gradient-end: #14b8a6; /* Teal */
           --accent: var(--gradient-start); /* Base accent color for text/borders */
 
-          --success: #10b981;
-          --warning: #f59e0b;
-          --error: #ef4444;
-          --info: #3b82f6;
+          /* --- Refined Message Colors (Cool Tones) --- */
+          --success-light: #e0f2f1; /* Very light teal/mint background */
+          --success-dark: #0f766e; /* Dark teal/mint text */
+          --error-light: #fee2e2; /* Very light cool red background */
+          --error-dark: #dc2626; /* Dark cool red text */
+          
           --shadow: 0 8px 20px rgba(0, 0, 0, 0.1); /* Smoother, larger shadow */
           --radius-sm: 0.375rem;
           --radius: 0.75rem;
@@ -896,23 +898,41 @@ const App = () => {
             border: 1px solid var(--border);
         }
 
+        /* --- Message Styling Update --- */
+        .message {
+            padding: 1rem;
+            margin-bottom: 1.5rem;
+            border-radius: var(--radius);
+            font-weight: 500;
+            border-left: 5px solid; /* Added a vertical line for emphasis */
+        }
+
+        .message.success {
+            background-color: var(--success-light);
+            color: var(--success-dark);
+            border-left-color: var(--gradient-end); /* Use teal for success border */
+        }
+        .message.error {
+            background-color: var(--error-light);
+            color: var(--error-dark);
+            border-left-color: var(--error-dark); /* Use defined dark red for error border */
+        }
+
+
         /* --- Other Component Styles (Minified) --- */
-        .message { padding: 1rem; margin-bottom: 1.5rem; border-radius: var(--radius); font-weight: 500; }
-        .message.success { background-color: var(--success); color: white; }
-        .message.error { background-color: var(--error); color: white; }
         button { cursor: pointer; transition: var(--transition); font-weight: 600; padding: 0.75rem 1.5rem; border: 1px solid transparent; border-radius: var(--radius-sm); position: relative; overflow: hidden; }
         .button-primary { background: linear-gradient(90deg, var(--gradient-start) 0%, var(--gradient-end) 100%); color: white; border: none; box-shadow: 0 2px 6px rgba(6, 182, 212, 0.4); }
         .button-primary:hover:not(:disabled) { transform: translateY(-1px); opacity: 0.9; box-shadow: 0 4px 10px rgba(6, 182, 212, 0.6); }
         .button-secondary { background-color: var(--bg-card); color: var(--text-primary); border: 1px solid var(--text-muted); }
         .button-secondary:hover:not(:disabled) { background-color: var(--bg-hover); border-color: var(--accent); color: var(--accent); }
-        .button-danger { background-color: var(--error); color: white; box-shadow: 0 2px 6px rgba(239, 68, 68, 0.4); }
-        .button-danger:hover:not(:disabled) { background-color: #c73737; transform: translateY(-1px); }
+        .button-danger { background-color: var(--error-dark); color: white; box-shadow: 0 2px 6px rgba(220, 38, 38, 0.4); }
+        .button-danger:hover:not(:disabled) { background-color: #a30e0e; transform: translateY(-1px); }
         .button-danger-sm { padding: 0.3rem 0.6rem; font-size: 0.8rem; }
         .button-icon { display: inline-flex; align-items: center; justify-content: center; line-height: 1; }
         button:disabled { opacity: 0.6; cursor: not-allowed; box-shadow: none !important; }
         .submit-btn { width: 100%; margin-top: 1rem; }
         .button-add-scenario { margin-top: 1rem; display: flex; align-items: center; gap: 0.5rem; }
-        .template-summary, .result-details summary { cursor: pointer; font-weight: 600; color: var(--accent); margin: 0.5rem 0; transition: color 0.2s; }
+        .template-summary, .result-details summary { cursor: pointer; font-weight: 600; color: var(--accent); transition: color 0.2s; }
         .template-summary:hover, .result-details summary:hover { color: var(--gradient-end); }
         .section-title { font-size: 1.5rem; margin-bottom: 1.5rem; padding-bottom: 0.5rem; border-bottom: 2px solid var(--border); color: var(--text-primary); }
         .endpoint-form, .test-form, .upload-section { background: var(--bg-card); padding: 2rem; border-radius: var(--radius); box-shadow: var(--shadow); border: 1px solid var(--border); }
@@ -931,10 +951,10 @@ const App = () => {
         .scenario-count { font-size: 0.85rem; color: var(--accent); font-weight: 600; margin-bottom: 0.5rem; display: flex; align-items: center; gap: 0.25rem; }
         .endpoint-id { font-size: 1.25rem; word-break: break-all; margin-bottom: 0.5rem; }
         .method-tag { position: absolute; top: 0; right: 0; padding: 0.3rem 0.6rem; border-radius: 0 var(--radius-sm) 0 var(--radius-sm); color: white; font-weight: 700; font-size: 0.8rem; }
-        .method-tag[data-method="GET"] { background: var(--success); }
-        .method-tag[data-method="POST"] { background: var(--info); }
-        .method-tag[data-method="PUT"], .method-tag[data-method="PATCH"] { background: var(--warning); }
-        .method-tag[data-method="DELETE"] { background: var(--error); }
+        .method-tag[data-method="GET"] { background: var(--success-dark); }
+        .method-tag[data-method="POST"] { background: var(--gradient-start); }
+        .method-tag[data-method="PUT"], .method-tag[data-method="PATCH"] { background: #f59e0b; }
+        .method-tag[data-method="DELETE"] { background: var(--error-dark); }
         .details-row { display: flex; gap: 1rem; margin-bottom: 1rem; font-size: 0.9rem; color: var(--text-secondary); }
         .template-preview { background: var(--bg-page); padding: 1rem; border-radius: var(--radius-sm); white-space: pre-wrap; word-break: break-all; font-size: 0.85rem; max-height: 200px; overflow-y: auto; border: 1px dashed var(--border); margin-top: 0.5rem; }
         .actions { display: flex; gap: 0.5rem; margin-top: 1rem; }
@@ -942,7 +962,7 @@ const App = () => {
         .scenario-card { border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 1rem; margin-bottom: 1rem; background: var(--bg-page); box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
         .scenario-name-input { color: var(--accent); }
         .result-status-code { font-weight: 700; padding: 0.25rem 0.5rem; border-radius: var(--radius-sm); color: white; background: linear-gradient(90deg, var(--gradient-start) 0%, var(--gradient-end) 100%); }
-        .result-card.status-error .result-status-code { background: var(--error); }
+        .result-card.status-error .result-status-code { background: var(--error-dark); }
         .result-details summary { color: var(--accent); }
         
         /* Mobile adjustments for the new layout */
@@ -1061,6 +1081,7 @@ const App = () => {
 
         {/* SCROLLABLE MAIN CONTENT AREA */}
         <div className="main-content-scroll">
+            {/* Message Bar with new styling */}
             {message && <div className={`message ${message.startsWith('Error') ? 'error' : 'success'}`}>{message}</div>}
 
             <div className="tab-content">
