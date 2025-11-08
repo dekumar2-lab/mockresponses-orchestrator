@@ -268,6 +268,21 @@ const ScenarioEditor = ({ endpoint, setNewEndpoint }) => {
         }));
     };
 
+    // SVG for Trash icon (lucide-react compatibility)
+    const TrashIcon = (props) => (
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}>
+            <polyline points="3 6 5 6 21 6" /><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6" /><path d="M10 11v6" /><path d="M14 11v6" />
+        </svg>
+    );
+
+    // SVG for Plus icon (lucide-react compatibility)
+    const PlusIcon = (props) => (
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}>
+            <line x1="12" y1="5" x2="12" y2="19" /><line x1="5" y1="12" x2="19" y2="12" />
+        </svg>
+    );
+
+
     return (
         <div className="scenario-editor">
             <h4 className="scenario-title">Conditional Scenarios</h4>
@@ -286,7 +301,7 @@ const ScenarioEditor = ({ endpoint, setNewEndpoint }) => {
                             placeholder={`Scenario ${index + 1}`}
                         />
                         <button type="button" onClick={() => handleRemoveScenario(index)} className="button-icon button-danger-sm">
-                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/><path d="M10 11v6"/><path d="M14 11v6"/></svg>
+                             <TrashIcon />
                         </button>
                     </div>
 
@@ -342,7 +357,7 @@ const ScenarioEditor = ({ endpoint, setNewEndpoint }) => {
                 </div>
             ))}
             <button type="button" onClick={handleAddScenario} className="button-secondary button-add-scenario">
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                <PlusIcon />
                 Add Scenario
             </button>
         </div>
@@ -379,6 +394,18 @@ const App = () => {
     showAdvanced: false
   });
   const [testResults, setTestResults] = useState([]);
+
+  // SVG Icons (lucide-react compatibility)
+  const ShieldIcon = (props) => (
+      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+  );
+  const UploadIcon = (props) => (
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+  );
+  const ChevronDownIcon = (props) => (
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}><polyline points="6 9 12 15 18 9"/></svg>
+  );
+
 
   // Load initial endpoints & set default
   useEffect(() => {
@@ -510,7 +537,7 @@ const App = () => {
     setEditingEndpoint(endpoint.endpointId);
     setActiveTab('create');
   };
-  
+
   /**
    * Switches to the Test tab and populates the test configuration for the given endpoint.
    * Path parameters are substituted with generic test values.
@@ -543,7 +570,7 @@ const App = () => {
         // Reset advanced params when auto-populating
         urlParams: '{}',
         queryParams: '{}',
-        bodyParams: (endpoint.method === 'POST' || endpoint.method === 'PUT' || endpoint.method === 'PATCH') 
+        bodyParams: (endpoint.method === 'POST' || endpoint.method === 'PUT' || endpoint.method === 'PATCH')
             ? '{\n  "field1": "value1",\n  "field2": "value2"\n}'
             : '{}',
     }));
@@ -686,7 +713,7 @@ const App = () => {
 
 
   return (
-    <div className="app-container">
+    <div className="app-layout-wrapper">
       <style>{`
         /* --- STYLES INLINED FOR SINGLE-FILE REACT MANDATE --- */
         /* Modern CSS Reset */
@@ -698,37 +725,88 @@ const App = () => {
         }
 
         :root {
-          /* Theme variables */
-          --bg-primary: #f8fafc;
-          --bg-secondary: #ffffff;
+          /* --- Professional Theme Variables --- */
+          --bg-page: #f5f7fa; /* Very light blue-gray background */
           --bg-card: #ffffff;
-          --bg-hover: #f1f5f9;
-          --text-primary: #1e293b;
-          --text-secondary: #64748b;
-          --text-muted: #94a3b8;
-          --border: #e2e8f0;
-          --accent: #3b82f6;
-          --accent-hover: #2563eb;
+          --bg-hover: #e8eaf6; /* Lighter background for hover */
+          --text-primary: #1f2937; /* Deep slate gray */
+          --text-secondary: #6b7280;
+          --text-muted: #9ca3af;
+          --border: #e0e7ff; /* Light blue/indigo border */
+          
+          /* --- Gradient Colors (Accent) --- */
+          --gradient-start: #4f46e5; /* Indigo */
+          --gradient-end: #9333ea; /* Violet */
+          --accent: var(--gradient-start); /* Base accent color for text/borders */
+
           --success: #10b981;
           --warning: #f59e0b;
           --error: #ef4444;
-          --info: #8b5cf6;
-          --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.06);
+          --info: #3b82f6; /* Regular blue for info */
+          --shadow: 0 4px 12px rgba(0, 0, 0, 0.08); /* Smoother, larger shadow */
           --radius-sm: 0.375rem;
           --radius: 0.75rem;
           --transition: all 0.2s ease-in-out;
-          
-          /* --- Gradient Colors --- */
-          --gradient-start-header: #3b82f6; /* Accent Blue */
-          --gradient-end-header: #8b5cf6; /* Info Violet */
-          --gradient-start-footer: #8b5cf6; /* Info Violet */
-          --gradient-end-footer: #3b82f6; /* Accent Blue */
+
+          /* Header/Footer Heights for fixed layout */
+          --header-height: 85px;
+          --footer-height: 60px;
+        }
+        
+        /* --- LAYOUT AND SCROLLING --- */
+
+        html, body, #root, .app-layout-wrapper {
+            height: 100%;
+            overflow: hidden; /* Prevent body scroll */
         }
 
         body {
-          background-color: var(--bg-primary);
+          background-color: var(--bg-page);
           color: var(--text-primary);
-          min-height: 100vh;
+        }
+
+        .header, .footer {
+            width: 100%;
+            z-index: 100; /* Ensure visibility above content */
+            padding: 1.5rem 2rem;
+            color: white;
+            box-shadow: var(--shadow);
+        }
+
+        .header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: var(--header-height);
+            border-radius: 0; /* Remove radius for full width fixed element */
+            background: linear-gradient(90deg, var(--gradient-start) 0%, var(--gradient-end) 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+        }
+
+        .footer {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            height: var(--footer-height);
+            border-radius: 0;
+            font-size: 0.85rem;
+            background: linear-gradient(90deg, var(--gradient-end) 0%, var(--gradient-start) 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .main-content-scroll {
+            /* Scrollable area */
+            overflow-y: auto;
+            height: 100%;
+            /* Add padding to prevent content from hiding behind fixed header/footer */
+            padding-top: var(--header-height);
+            padding-bottom: var(--footer-height);
+            -webkit-overflow-scrolling: touch;
         }
 
         .app-container {
@@ -737,36 +815,29 @@ const App = () => {
           padding: 2rem 1rem;
         }
 
+
         /* --- Header & Tabs --- */
 
-        .header {
-          text-align: center;
-          margin-bottom: 2rem;
-          /* New Gradient Styles */
-          padding: 2.5rem 2rem;
-          color: white;
-          border-radius: var(--radius);
-          background: linear-gradient(135deg, var(--gradient-start-header) 0%, var(--gradient-end-header) 100%);
-          box-shadow: var(--shadow);
-        }
-
         .header h1 {
-          font-size: 2.5rem;
-          color: white; /* Ensure heading color is white on gradient */
+          font-size: 1.8rem;
+          color: white;
+          margin-bottom: 0.25rem;
         }
 
         .header p {
-          color: rgba(255, 255, 255, 0.8);
-          margin-top: 0.5rem;
+          color: rgba(255, 255, 255, 0.9);
+          font-size: 0.9rem;
+          margin-top: 0.1rem;
         }
 
         .tabs-nav {
           display: flex;
           margin-bottom: 2rem;
           background: var(--bg-card);
-          padding: 0.5rem;
+          padding: 0.25rem;
           border-radius: var(--radius);
-          box-shadow: var(--shadow);
+          box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+          border: 1px solid var(--border);
         }
 
         .tabs-nav button {
@@ -783,12 +854,14 @@ const App = () => {
 
         .tabs-nav button:hover:not(.active) {
           background: var(--bg-hover);
+          color: var(--text-primary);
         }
 
+        /* Gradient applied to ACTIVE tab button */
         .tabs-nav button.active {
-          background: var(--accent);
+          background: linear-gradient(45deg, var(--gradient-start) 0%, var(--gradient-end) 100%);
           color: white;
-          box-shadow: var(--shadow);
+          box-shadow: 0 2px 8px rgba(79, 70, 229, 0.4);
         }
 
         .message {
@@ -808,21 +881,117 @@ const App = () => {
           color: white;
         }
 
+        /* --- Buttons (Applying Gradient) --- */
+
+        button {
+          cursor: pointer;
+          transition: var(--transition);
+          font-weight: 600;
+          padding: 0.75rem 1.5rem;
+          border: 1px solid transparent;
+          border-radius: var(--radius-sm);
+          position: relative;
+          overflow: hidden;
+        }
+        
+        /* Base Gradient Style for Primary/Accent Buttons */
+        .button-primary {
+            background: linear-gradient(90deg, var(--gradient-start) 0%, var(--gradient-end) 100%);
+            color: white;
+            border: none;
+            box-shadow: 0 2px 6px rgba(79, 70, 229, 0.4);
+        }
+        
+        .button-primary:hover:not(:disabled) {
+            transform: translateY(-1px);
+            opacity: 0.9;
+            box-shadow: 0 4px 10px rgba(79, 70, 229, 0.6);
+        }
+
+        /* Secondary Button (Standard, no gradient) */
+        .button-secondary {
+          background-color: var(--bg-card);
+          color: var(--text-primary);
+          border: 1px solid var(--text-muted);
+        }
+
+        .button-secondary:hover:not(:disabled) {
+          background-color: var(--bg-hover);
+          border-color: var(--accent);
+          color: var(--accent);
+        }
+
+        .button-danger {
+          background-color: var(--error);
+          color: white;
+          box-shadow: 0 2px 6px rgba(239, 68, 68, 0.4);
+        }
+
+        .button-danger:hover:not(:disabled) {
+          background-color: #c73737;
+          transform: translateY(-1px);
+        }
+
+        .button-danger-sm {
+            padding: 0.3rem 0.6rem;
+            font-size: 0.8rem;
+        }
+
+        .button-icon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            line-height: 1;
+        }
+
+        button:disabled {
+          opacity: 0.6;
+          cursor: not-allowed;
+          box-shadow: none !important;
+        }
+
+        .submit-btn {
+            width: 100%;
+            margin-top: 1rem;
+        }
+
+        .button-add-scenario {
+            margin-top: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        /* --- Link-like elements (summary, links) using accent color --- */
+        .template-summary, .result-details summary {
+            cursor: pointer;
+            font-weight: 600;
+            color: var(--accent); /* Use base accent color */
+            margin: 0.5rem 0;
+            transition: color 0.2s;
+        }
+        
+        .template-summary:hover, .result-details summary:hover {
+            color: var(--gradient-end);
+        }
+
+
         /* --- Section and Form Styling --- */
 
         .section-title {
           font-size: 1.5rem;
           margin-bottom: 1.5rem;
           padding-bottom: 0.5rem;
-          border-bottom: 1px solid var(--border);
+          border-bottom: 2px solid var(--border);
           color: var(--text-primary);
         }
 
-        .endpoint-form, .test-form {
+        .endpoint-form, .test-form, .upload-section {
           background: var(--bg-card);
           padding: 2rem;
           border-radius: var(--radius);
           box-shadow: var(--shadow);
+          border: 1px solid var(--border);
         }
 
         .form-group {
@@ -842,13 +1011,14 @@ const App = () => {
           padding: 0.75rem;
           border: 1px solid var(--border);
           border-radius: var(--radius-sm);
-          background-color: var(--bg-secondary);
+          background-color: var(--bg-card);
           color: var(--text-primary);
-          transition: border-color 0.2s;
+          transition: border-color 0.2s, box-shadow 0.2s;
         }
 
         .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
           border-color: var(--accent);
+          box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
           outline: none;
         }
 
@@ -880,84 +1050,17 @@ const App = () => {
             padding: 0.5rem;
             background: var(--bg-hover);
             border-radius: var(--radius-sm);
+            border-left: 3px solid var(--accent);
         }
-        
+
         .help-text-sm {
             font-size: 0.75rem;
             color: var(--text-secondary);
             margin-top: 0.25rem;
         }
         
-        /* --- Buttons --- */
-
-        button {
-          cursor: pointer;
-          transition: var(--transition);
-          font-weight: 600;
-          padding: 0.75rem 1.5rem;
-          border: 1px solid transparent;
-          border-radius: var(--radius-sm);
-        }
-
-        .button-primary {
-          background-color: var(--accent);
-          color: white;
-        }
-
-        .button-primary:hover:not(:disabled) {
-          background-color: var(--accent-hover);
-        }
-
-        .button-secondary {
-          background-color: var(--bg-hover);
-          color: var(--text-primary);
-          border: 1px solid var(--border);
-        }
-
-        .button-secondary:hover:not(:disabled) {
-          background-color: var(--border);
-        }
-
-        .button-danger {
-          background-color: var(--error);
-          color: white;
-        }
-
-        .button-danger:hover:not(:disabled) {
-          background-color: #c73737;
-        }
-        
-        .button-danger-sm {
-            padding: 0.3rem 0.6rem;
-            font-size: 0.8rem;
-        }
-
-        .button-icon {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            line-height: 1;
-        }
-
-        button:disabled {
-          opacity: 0.5;
-          cursor: not-allowed;
-        }
-
-        .submit-btn {
-            width: 100%;
-            margin-top: 1rem;
-        }
-        
-        .button-add-scenario {
-            margin-top: 1rem;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-
         /* --- Endpoint List --- */
-
+        
         .endpoint-grid {
           display: grid;
           grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
@@ -974,10 +1077,10 @@ const App = () => {
           display: flex;
           flex-direction: column;
         }
-        
+
         .scenario-count {
             font-size: 0.85rem;
-            color: var(--info);
+            color: var(--accent);
             font-weight: 600;
             margin-bottom: 0.5rem;
             display: flex;
@@ -1015,15 +1118,8 @@ const App = () => {
           color: var(--text-secondary);
         }
 
-        .template-summary {
-            cursor: pointer;
-            font-weight: 600;
-            color: var(--accent);
-            margin: 0.5rem 0;
-        }
-
         .template-preview {
-          background: var(--bg-hover);
+          background: var(--bg-page);
           padding: 1rem;
           border-radius: var(--radius-sm);
           white-space: pre-wrap;
@@ -1048,272 +1144,36 @@ const App = () => {
             margin-top: 1.5rem;
         }
         
-        .scenario-title {
-            font-size: 1.1rem;
-            font-weight: 700;
-            color: var(--text-primary);
-            margin-bottom: 0.5rem;
-        }
-        
         .scenario-card {
             border: 1px solid var(--border);
             border-radius: var(--radius-sm);
             padding: 1rem;
             margin-bottom: 1rem;
-            background: var(--bg-secondary);
+            background: var(--bg-page);
             box-shadow: 0 1px 3px rgba(0,0,0,0.05);
         }
         
-        .scenario-card:last-of-type {
-            margin-bottom: 0.5rem;
-        }
-        
-        .scenario-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 0.75rem;
-        }
-        
         .scenario-name-input {
-            font-weight: 600;
-            font-size: 1rem;
-            color: var(--info);
-            border: 1px solid var(--border);
-            padding: 0.25rem 0.5rem;
-            border-radius: var(--radius-sm);
-            flex-grow: 1;
-            margin-right: 1rem;
+            color: var(--accent);
         }
-        
+
         /* --- Test API Section --- */
-
-        .test-form .form-group-row {
-          align-items: stretch;
-        }
-
-        .test-form .method-selector {
-            flex: 0 0 120px;
-        }
-
-        .test-form .url-input {
-            flex: 1;
-        }
-
-        .test-form .button-icon {
-            flex: 0 0 40px;
-            padding: 0;
-            border: 1px solid var(--border);
-            background: var(--bg-hover);
-        }
-
-        .test-form .icon-chevron {
-            transition: transform 0.3s;
-        }
-
-        .test-form .icon-chevron.up {
-            transform: rotate(180deg);
-        }
-
-        .advanced-options {
-            border: 1px dashed var(--border);
-            padding: 1rem;
-            border-radius: var(--radius-sm);
-            margin-bottom: 1rem;
-        }
-
-        .results-container {
-            margin-top: 2rem;
-            padding: 1.5rem;
-            background: var(--bg-card);
-            border-radius: var(--radius);
-            box-shadow: var(--shadow);
-        }
-
-        .results-title {
-            font-size: 1.2rem;
-            margin-bottom: 1rem;
-            color: var(--text-primary);
-        }
-
-        .results-list {
-            display: flex;
-            flex-direction: column;
-            gap: 1rem;
-        }
-
-        .result-card {
-            padding: 1rem;
-            border-radius: var(--radius-sm);
-            border-left: 5px solid;
-            background: var(--bg-secondary);
-            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
-        }
-
-        .result-card.status-success { border-left-color: var(--success); }
-        .result-card.status-error { border-left-color: var(--error); }
-
-        .result-header {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-            margin-bottom: 0.5rem;
-        }
 
         .result-status-code {
             font-weight: 700;
             padding: 0.25rem 0.5rem;
             border-radius: var(--radius-sm);
             color: white;
-            background: var(--accent);
+            /* Use accent gradient for success status */
+            background: linear-gradient(90deg, var(--gradient-start) 0%, var(--gradient-end) 100%);
         }
-
+        
         .result-card.status-error .result-status-code {
             background: var(--error);
         }
-
-        .result-latency {
-            font-size: 0.85rem;
-            color: var(--text-secondary);
-        }
-
-        .result-url {
-            flex-grow: 1;
-            font-size: 0.9rem;
-            word-break: break-all;
-        }
-
-        .result-details details {
-            border-top: 1px dashed var(--border);
-            margin-top: 0.5rem;
-            padding-top: 0.5rem;
-        }
-
-        .result-details summary {
-            font-weight: 600;
-            cursor: pointer;
-            color: var(--accent);
-        }
-
-        .result-details pre {
-            background: var(--bg-hover);
-            padding: 0.75rem;
-            border-radius: var(--radius-sm);
-            white-space: pre-wrap;
-            word-break: break-all;
-            font-size: 0.8rem;
-            margin-top: 0.5rem;
-        }
-
-        .request-info p {
-            font-size: 0.85rem;
-            margin-top: 0.5rem;
-            word-break: break-all;
-        }
-
-        .request-info code {
-            background: var(--bg-hover);
-            padding: 2px 4px;
-            border-radius: 3px;
-            font-size: 0.8rem;
-            color: var(--text-primary);
-        }
-
-
-        /* --- Upload Schema Section --- */
-
-        .upload-section {
-          max-width: 700px;
-          margin: 0 auto;
-        }
-
-        .upload-area {
-          border: 2px dashed var(--border);
-          border-radius: var(--radius);
-          padding: 2rem;
-          text-align: center;
-          transition: var(--transition);
-          margin-bottom: 1rem;
-          background: var(--bg-card);
-        }
-
-        .upload-area:hover {
-          border-color: var(--accent);
-          background: var(--bg-hover);
-        }
-
-        .upload-label {
-          cursor: pointer;
-          display: block;
-        }
-
-        .upload-content {
-          display: flex;
-          flex-direction: column;
-          align-items: center;
-          gap: 1rem;
-        }
-
-        .upload-icon {
-          font-size: 2rem;
-          color: var(--accent);
-        }
-
-        .upload-text strong {
-          display: block;
-          margin-bottom: 0.5rem;
-          color: var(--text-primary);
-        }
-
-        .upload-text p {
-          color: var(--text-muted);
-          margin: 0;
-        }
-
-        .upload-message {
-          background: var(--accent);
-          color: white;
-          padding: 0.75rem;
-          border-radius: var(--radius-sm);
-          text-align: center;
-          font-weight: 600;
-          margin-bottom: 1rem;
-        }
-
-        .upload-help {
-          background: var(--bg-card);
-          padding: 1rem;
-          border-radius: var(--radius-sm);
-          border-left: 4px solid var(--accent);
-          box-shadow: var(--shadow);
-        }
-
-        .upload-help h4 {
-          margin-bottom: 0.5rem;
-          color: var(--text-primary);
-        }
-
-        .upload-help pre {
-            background: var(--bg-hover);
-            padding: 0.75rem;
-            border-radius: var(--radius-sm);
-            white-space: pre-wrap;
-            word-break: break-all;
-            font-size: 0.75rem;
-            overflow-x: auto;
-        }
         
-        /* --- Footer Styling --- */
-        .footer {
-            margin-top: 3rem;
-            padding: 1.5rem 1rem;
-            text-align: center;
-            border-radius: var(--radius);
-            color: white;
-            font-size: 0.9rem;
-            font-weight: 500;
-            background: linear-gradient(135deg, var(--gradient-start-footer) 0%, var(--gradient-end-footer) 100%);
-            box-shadow: var(--shadow);
+        .result-details summary {
+            color: var(--accent);
         }
 
         /* Responsive adjustments */
@@ -1322,7 +1182,17 @@ const App = () => {
             padding: 1rem 0.5rem;
           }
           .header h1 {
-            font-size: 2rem;
+            font-size: 1.5rem;
+          }
+          .header p {
+             display: none;
+          }
+          .header {
+             height: 60px;
+             --header-height: 60px;
+          }
+          .main-content-scroll {
+             padding-top: var(--header-height);
           }
           .form-group-row {
             flex-direction: column;
@@ -1337,388 +1207,402 @@ const App = () => {
           }
           .test-form .form-group-row {
             flex-direction: row; /* Keep test row horizontal */
+            flex-wrap: nowrap;
+          }
+          .test-form .method-selector {
+             flex: 0 0 100px;
           }
         }
       `}</style>
 
+      {/* FIXED HEADER */}
       <header className="header">
-        <h1>Dynamic Mock API Generator</h1>
-        <p>Define dynamic endpoints and test them in real-time.</p>
+        <div>
+            <h1>Dynamic Mock API Generator</h1>
+            <p>Define dynamic endpoints and test them in real-time.</p>
+        </div>
       </header>
+      
+      {/* SCROLLABLE MAIN CONTENT */}
+      <div className="main-content-scroll">
+        <div className="app-container">
 
-      <div className="tabs-nav">
-        <button
-          className={activeTab === 'endpoints' ? 'active' : ''}
-          onClick={() => setActiveTab('endpoints')}
-        >
-          View Endpoints ({endpoints.length})
-        </button>
-        <button
-          className={activeTab === 'create' ? 'active' : ''}
-          onClick={() => {
-              setActiveTab('create');
-              setEditingEndpoint(null); // Clear editing state when switching to create
-              setNewEndpoint({
-                endpointId: '/users/:id',
-                responseTemplate: '{\n  "status": "success",\n  "message": "User {{path.id}} details retrieved.",\n  "query_filter": "{{query.filter}}",\n  "data_received": {{body}}\n}',
-                method: 'GET',
-                statusCode: 200,
-                delay: 0,
-                internalId: '',
-                scenarios: []
-              });
-          }}
-        >
-          {editingEndpoint ? 'Edit Endpoint' : 'Create Endpoint'}
-        </button>
-        <button
-          className={activeTab === 'test' ? 'active' : ''}
-          onClick={() => setActiveTab('test')}
-        >
-          Test API
-        </button>
-        <button
-          className={activeTab === 'schema' ? 'active' : ''}
-          onClick={() => setActiveTab('schema')}
-        >
-          Upload Schema
-        </button>
-      </div>
-
-      {message && <div className={`message ${message.startsWith('Error') ? 'error' : 'success'}`}>{message}</div>}
-
-      <div className="tab-content">
-        {/* VIEW ENDPOINTS TAB */}
-        {activeTab === 'endpoints' && (
-          <section className="endpoint-list-section">
-            <h2 className="section-title">Registered Mock Endpoints</h2>
-            {loading && <p className="loading">Loading...</p>}
-            {endpoints.length === 0 && !loading && (
-              <p className="empty-state">No endpoints defined. Create one in the "Create Endpoint" tab.</p>
-            )}
-            <div className="endpoint-grid">
-              {endpoints.map(endpoint => (
-                <div key={endpoint.internalId} className="endpoint-card">
-                  <div className="method-tag" data-method={endpoint.method}>
-                    {endpoint.method}
-                  </div>
-                  <h3 className="endpoint-id">{endpoint.endpointId}</h3>
-                  <div className="details-row">
-                    <span>Default Status: <strong>{endpoint.statusCode}</strong></span>
-                    <span>Default Delay: <strong>{endpoint.delay}ms</strong></span>
-                  </div>
-                  {endpoint.scenarios && endpoint.scenarios.length > 0 && (
-                      <div className="scenario-count">
-                          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-                          {endpoint.scenarios.length} Conditional Scenario(s)
-                      </div>
-                  )}
-                  <details>
-                    <summary className="template-summary">Default Response Template</summary>
-                    <pre className="template-preview">{endpoint.responseTemplate}</pre>
-                  </details>
-                  <div className="actions">
-                    <button onClick={() => handleTestEndpoint(endpoint)} className="button-primary">
-                        Test
-                    </button>
-                    <button onClick={() => handleEdit(endpoint)} className="button-secondary">Edit</button>
-                    <button onClick={() => handleDeleteEndpoint(endpoint.internalId, endpoint.endpointId)} className="button-danger">Delete</button>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </section>
-        )}
-
-        {/* CREATE/EDIT ENDPOINT TAB */}
-        {activeTab === 'create' && (
-          <section className="form-section">
-            <h2 className="section-title">{editingEndpoint ? `Editing: ${editingEndpoint} (${newEndpoint.method})` : 'Create New Endpoint'}</h2>
-            <form onSubmit={handleSaveEndpoint} className="endpoint-form">
-              <div className="form-group">
-                <label htmlFor="endpointId">Endpoint URL (e.g., /users/:id)</label>
-                <input
-                  type="text"
-                  id="endpointId"
-                  name="endpointId"
-                  value={newEndpoint.endpointId}
-                  onChange={handleInputChange}
-                  placeholder="/users/:id"
-                  required
-                />
-              </div>
-
-              <h3 className="scenario-title" style={{marginTop: '1rem'}}>Default Response Settings</h3>
-
-              <div className="form-group-row">
-                <div className="form-group">
-                  <label htmlFor="method">Method</label>
-                  <select
-                    id="method"
-                    name="method"
-                    value={newEndpoint.method}
-                    onChange={handleInputChange}
-                  >
-                    <option>GET</option>
-                    <option>POST</option>
-                    <option>PUT</option>
-                    <option>DELETE</option>
-                    <option>PATCH</option>
-                  </select>
-                </div>
-                <div className="form-group">
-                  <label htmlFor="statusCode">Default Status Code</label>
-                  <input
-                    type="number"
-                    id="statusCode"
-                    name="statusCode"
-                    value={newEndpoint.statusCode}
-                    onChange={handleInputChange}
-                    min="100"
-                    max="599"
-                    required
-                  />
-                </div>
-                <div className="form-group">
-                  <label htmlFor="delay">Default Delay (ms)</label>
-                  <input
-                    type="number"
-                    id="delay"
-                    name="delay"
-                    value={newEndpoint.delay}
-                    onChange={handleInputChange}
-                    min="0"
-                    required
-                  />
-                </div>
-              </div>
-
-              <div className="form-group full-width">
-                <label htmlFor="responseTemplate">
-                    Default Response Template (JSON)
-                </label>
-                <textarea
-                  id="responseTemplate"
-                  name="responseTemplate"
-                  value={newEndpoint.responseTemplate}
-                  onChange={handleInputChange}
-                  rows="10"
-                  required
-                ></textarea>
-                <p className="help-text">
-                    Use placeholders:
-                    <code>&lbrace;&lbrace;path.param&rbrace;&rbrace;</code>,
-                    <code>&lbrace;&lbrace;query.param&rbrace;&rbrace;</code>,
-                    <code>&lbrace;&lbrace;body.field&rbrace;&rbrace;</code>,
-                    and <code>&lbrace;&lbrace;body&rbrace;&rbrace;</code>.
-                </p>
-              </div>
-
-              {/* New Scenario Editor */}
-              <ScenarioEditor endpoint={newEndpoint} setNewEndpoint={setNewEndpoint} />
-
-              <button type="submit" disabled={loading} className="button-primary">
-                {loading ? 'Saving...' : editingEndpoint ? 'Update Endpoint' : 'Create Endpoint'}
+            <div className="tabs-nav">
+              <button
+                className={activeTab === 'endpoints' ? 'active' : ''}
+                onClick={() => setActiveTab('endpoints')}
+              >
+                View Endpoints ({endpoints.length})
               </button>
-            </form>
-          </section>
-        )}
-
-        {/* SCHEMA UPLOAD TAB */}
-        {activeTab === 'schema' && (
-          <section className="upload-section">
-            <h2 className="section-title">Upload Endpoint Schema (JSON)</h2>
-            <div className="upload-area">
-              <label htmlFor="schemaUpload" className="upload-label">
-                <div className="upload-content">
-                  <span className="upload-icon">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
-                  </span>
-                  <div className="upload-text">
-                    <strong>Click to upload your endpoint JSON schema file.</strong>
-                    <p>File must be an array of endpoint objects.</p>
-                  </div>
-                </div>
-                <input
-                  type="file"
-                  id="schemaUpload"
-                  accept=".json"
-                  onChange={handleUploadSchema}
-                  style={{ display: 'none' }}
-                />
-              </label>
+              <button
+                className={activeTab === 'create' ? 'active' : ''}
+                onClick={() => {
+                    setActiveTab('create');
+                    setEditingEndpoint(null); // Clear editing state when switching to create
+                    setNewEndpoint({
+                      endpointId: '/users/:id',
+                      responseTemplate: '{\n  "status": "success",\n  "message": "User {{path.id}} details retrieved.",\n  "query_filter": "{{query.filter}}",\n  "data_received": {{body}}\n}',
+                      method: 'GET',
+                      statusCode: 200,
+                      delay: 0,
+                      internalId: '',
+                      scenarios: []
+                    });
+                }}
+              >
+                {editingEndpoint ? 'Edit Endpoint' : 'Create Endpoint'}
+              </button>
+              <button
+                className={activeTab === 'test' ? 'active' : ''}
+                onClick={() => setActiveTab('test')}
+              >
+                Test API
+              </button>
+              <button
+                className={activeTab === 'schema' ? 'active' : ''}
+                onClick={() => setActiveTab('schema')}
+              >
+                Upload Schema
+              </button>
             </div>
-            {uploadMessage && <div className="upload-message">{uploadMessage}</div>}
 
-            <div className="upload-help">
-              <h4>Example Schema Format (with Scenarios)</h4>
-              <pre>{JSON.stringify([{
-                  "endpointId": "/products/:id",
-                  "method": "GET",
-                  "statusCode": 200,
-                  "delay": 100,
-                  "responseTemplate": "{\n  \"product_id\": \"{{path.id}}\",\n  \"status\": \"available\"\n}",
-                  "scenarios": [
-                    {
-                      "name": "Out of Stock",
-                      "condition": "path.id === 'oos'",
-                      "statusCode": 404,
-                      "responseTemplate": "{\n  \"error\": \"Product {{path.id}} is out of stock.\"\n}"
-                    }
-                  ]
-              },
-              {
-                  "endpointId": "/orders",
-                  "method": "POST",
-                  "statusCode": 201,
-                  "responseTemplate": "{\n  \"message\": \"Order received\",\n  \"data\": {{body}}\n}"
-              }], null, 2)}</pre>
-            </div>
-          </section>
-        )}
+            {message && <div className={`message ${message.startsWith('Error') ? 'error' : 'success'}`}>{message}</div>}
 
-        {/* TEST API TAB */}
-        {activeTab === 'test' && (
-          <section className="test-api-section">
-            <h2 className="section-title">Test Dynamic API Call</h2>
-            <form onSubmit={handleTestApi} className="test-form">
-              <div className="form-group-row">
-                <div className="form-group method-selector">
-                  <select
-                    id="method"
-                    name="method"
-                    value={testConfig.method}
-                    onChange={handleTestConfigChange}
-                  >
-                    <option>GET</option>
-                    <option>POST</option>
-                    <option>PUT</option>
-                    <option>DELETE</option>
-                    <option>PATCH</option>
-                  </select>
-                </div>
-                <div className="form-group full-width url-input">
-                  <input
-                    type="text"
-                    id="endpointId"
-                    name="endpointId"
-                    value={testConfig.endpointId}
-                    onChange={handleTestConfigChange}
-                    placeholder="/api/users/123?filter=active"
-                    required
-                  />
-                </div>
-                <button
-                  type="button"
-                  className="button-icon"
-                  onClick={() => setTestConfig(prev => ({ ...prev, showAdvanced: !prev.showAdvanced }))}
-                  title="Toggle advanced request options"
-                >
-                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={`icon-chevron ${testConfig.showAdvanced ? 'up' : 'down'}`}><polyline points="6 9 12 15 18 9"/></svg>
-                </button>
-              </div>
-
-              {testConfig.showAdvanced && (
-                <div className="advanced-options">
-                    <div className="form-group-row">
-                        <div className="form-group">
-                            <label htmlFor="urlParams">Path Parameters (JSON)</label>
-                            <textarea
-                              id="urlParams"
-                              name="urlParams"
-                              value={testConfig.urlParams}
-                              onChange={handleTestConfigChange}
-                              rows="3"
-                              placeholder='{"id": "123"}'
-                            ></textarea>
-                            <p className="help-text">Manually set path parameters for **&lbrace;&lbrace;path.param&rbrace;&rbrace;**.</p>
-                        </div>
-                        <div className="form-group">
-                            <label htmlFor="queryParams">Query Parameters (JSON)</label>
-                            <textarea
-                              id="queryParams"
-                              name="queryParams"
-                              value={testConfig.queryParams}
-                              onChange={handleTestConfigChange}
-                              rows="3"
-                              placeholder='{"limit": 10, "page": 1}'
-                            ></textarea>
-                            <p className="help-text">Manually set query parameters for **&lbrace;&lbrace;query.param&rbrace;&rbrace;** (overrides URL query).</p>
-                        </div>
-                    </div>
-
-                  {(testConfig.method === 'POST' || testConfig.method === 'PUT' || testConfig.method === 'PATCH') && (
-                    <div className="form-group full-width">
-                      <label htmlFor="bodyParams">Request Body (JSON)</label>
-                      <textarea
-                        id="bodyParams"
-                        name="bodyParams"
-                        value={testConfig.bodyParams}
-                        onChange={handleTestConfigChange}
-                        rows="5"
-                        placeholder='{"name": "John", "status": "active"}'
-                      ></textarea>
-                      <p className="help-text">Used for **&lbrace;&lbrace;body.field&rbrace;&rbrace;** or **&lbrace;&lbrace;body&rbrace;&rbrace;** placeholders.</p>
-                    </div>
+            <div className="tab-content">
+              {/* VIEW ENDPOINTS TAB */}
+              {activeTab === 'endpoints' && (
+                <section className="endpoint-list-section">
+                  <h2 className="section-title">Registered Mock Endpoints</h2>
+                  {loading && <p className="loading">Loading...</p>}
+                  {endpoints.length === 0 && !loading && (
+                    <p className="empty-state">No endpoints defined. Create one in the "Create Endpoint" tab.</p>
                   )}
-                </div>
+                  <div className="endpoint-grid">
+                    {endpoints.map(endpoint => (
+                      <div key={endpoint.internalId} className="endpoint-card">
+                        <div className="method-tag" data-method={endpoint.method}>
+                          {endpoint.method}
+                        </div>
+                        <h3 className="endpoint-id">{endpoint.endpointId}</h3>
+                        <div className="details-row">
+                          <span>Default Status: <strong>{endpoint.statusCode}</strong></span>
+                          <span>Default Delay: <strong>{endpoint.delay}ms</strong></span>
+                        </div>
+                        {endpoint.scenarios && endpoint.scenarios.length > 0 && (
+                            <div className="scenario-count">
+                                <ShieldIcon />
+                                {endpoint.scenarios.length} Conditional Scenario(s)
+                            </div>
+                        )}
+                        <details>
+                          <summary className="template-summary">Default Response Template</summary>
+                          <pre className="template-preview">{endpoint.responseTemplate}</pre>
+                        </details>
+                        <div className="actions">
+                          <button onClick={() => handleTestEndpoint(endpoint)} className="button-primary">
+                              Test
+                          </button>
+                          <button onClick={() => handleEdit(endpoint)} className="button-secondary">Edit</button>
+                          <button onClick={() => handleDeleteEndpoint(endpoint.internalId, endpoint.endpointId)} className="button-danger">Delete</button>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </section>
               )}
 
-              <button type="submit" disabled={loading} className="button-primary submit-btn">
-                {loading ? 'Sending Request...' : `Send ${testConfig.method} Request`}
-              </button>
-            </form>
+              {/* CREATE/EDIT ENDPOINT TAB */}
+              {activeTab === 'create' && (
+                <section className="form-section">
+                  <h2 className="section-title">{editingEndpoint ? `Editing: ${editingEndpoint} (${newEndpoint.method})` : 'Create New Endpoint'}</h2>
+                  <form onSubmit={handleSaveEndpoint} className="endpoint-form">
+                    <div className="form-group">
+                      <label htmlFor="endpointId">Endpoint URL (e.g., /users/:id)</label>
+                      <input
+                        type="text"
+                        id="endpointId"
+                        name="endpointId"
+                        value={newEndpoint.endpointId}
+                        onChange={handleInputChange}
+                        placeholder="/users/:id"
+                        required
+                      />
+                    </div>
 
-            {testResults.length > 0 && (
-              <div className="results-container">
-                <h3 className="results-title">Test History (Last 5)</h3>
-                <div className="results-list">
-                  {testResults.map(result => (
-                    <div key={result.id} className={`result-card status-${result.statusCode >= 400 ? 'error' : 'success'}`}>
-                      <div className="result-header">
-                        <span className="result-status-code">{result.statusCode}</span>
-                        <span className="result-latency">{result.latency}ms</span>
-                        <span className="result-url">
-                          <strong>{result.method}</strong> {API_BASE}{result.url.split('?')[0]}
-                        </span>
+                    <h3 className="scenario-title" style={{marginTop: '1rem'}}>Default Response Settings</h3>
+
+                    <div className="form-group-row">
+                      <div className="form-group">
+                        <label htmlFor="method">Method</label>
+                        <select
+                          id="method"
+                          name="method"
+                          value={newEndpoint.method}
+                          onChange={handleInputChange}
+                        >
+                          <option>GET</option>
+                          <option>POST</option>
+                          <option>PUT</option>
+                          <option>DELETE</option>
+                          <option>PATCH</option>
+                        </select>
                       </div>
-
-                      <div className="result-details">
-                        <details>
-                          <summary>Request Details</summary>
-                          <div className="request-info">
-                            <p><strong>Path Params:</strong>
-                              <code>{JSON.stringify(result.request.pathParams)}</code>
-                            </p>
-                            {Object.keys(result.request.queryParams).length > 0 && (
-                              <p><strong>Query Params:</strong>
-                                <code>{JSON.stringify(result.request.queryParams)}</code>
-                              </p>
-                            )}
-                            {result.request.bodyParams && Object.keys(result.request.bodyParams).length > 0 && (
-                              <p><strong>Body Params:</strong>
-                                <code>{JSON.stringify(result.request.bodyParams)}</code>
-                              </p>
-                            )}
-                          </div>
-                        </details>
-
-                        <details open>
-                          <summary>Dynamic Response</summary>
-                          <pre>{JSON.stringify(result.success ? result.response : result.error, null, 2)}</pre>
-                        </details>
+                      <div className="form-group">
+                        <label htmlFor="statusCode">Default Status Code</label>
+                        <input
+                          type="number"
+                          id="statusCode"
+                          name="statusCode"
+                          value={newEndpoint.statusCode}
+                          onChange={handleInputChange}
+                          min="100"
+                          max="599"
+                          required
+                        />
+                      </div>
+                      <div className="form-group">
+                        <label htmlFor="delay">Default Delay (ms)</label>
+                        <input
+                          type="number"
+                          id="delay"
+                          name="delay"
+                          value={newEndpoint.delay}
+                          onChange={handleInputChange}
+                          min="0"
+                          required
+                        />
                       </div>
                     </div>
-                  ))}
-                </div>
-              </div>
-            )}
-          </section>
-        )}
-      </div>
+
+                    <div className="form-group full-width">
+                      <label htmlFor="responseTemplate">
+                          Default Response Template (JSON)
+                      </label>
+                      <textarea
+                        id="responseTemplate"
+                        name="responseTemplate"
+                        value={newEndpoint.responseTemplate}
+                        onChange={handleInputChange}
+                        rows="10"
+                        required
+                      ></textarea>
+                      <p className="help-text">
+                          Use placeholders:
+                          <code>&lbrace;&lbrace;path.param&rbrace;&rbrace;</code>,
+                          <code>&lbrace;&lbrace;query.param&rbrace;&rbrace;</code>,
+                          <code>&lbrace;&lbrace;body.field&rbrace;&rbrace;</code>,
+                          and <code>&lbrace;&lbrace;body&rbrace;&rbrace;</code>.
+                      </p>
+                    </div>
+
+                    {/* New Scenario Editor */}
+                    <ScenarioEditor endpoint={newEndpoint} setNewEndpoint={setNewEndpoint} />
+
+                    <button type="submit" disabled={loading} className="button-primary submit-btn">
+                      {loading ? 'Saving...' : editingEndpoint ? 'Update Endpoint' : 'Create Endpoint'}
+                    </button>
+                  </form>
+                </section>
+              )}
+
+              {/* SCHEMA UPLOAD TAB */}
+              {activeTab === 'schema' && (
+                <section className="upload-section">
+                  <h2 className="section-title">Upload Endpoint Schema (JSON)</h2>
+                  <div className="upload-area">
+                    <label htmlFor="schemaUpload" className="upload-label">
+                      <div className="upload-content">
+                        <span className="upload-icon">
+                          <UploadIcon />
+                        </span>
+                        <div className="upload-text">
+                          <strong>Click to upload your endpoint JSON schema file.</strong>
+                          <p>File must be an array of endpoint objects.</p>
+                        </div>
+                      </div>
+                      <input
+                        type="file"
+                        id="schemaUpload"
+                        accept=".json"
+                        onChange={handleUploadSchema}
+                        style={{ display: 'none' }}
+                      />
+                    </label>
+                  </div>
+                  {uploadMessage && <div className="upload-message">{uploadMessage}</div>}
+
+                  <div className="upload-help">
+                    <h4>Example Schema Format (with Scenarios)</h4>
+                    <pre>{JSON.stringify([{
+                        "endpointId": "/products/:id",
+                        "method": "GET",
+                        "statusCode": 200,
+                        "delay": 100,
+                        "responseTemplate": "{\n  \"product_id\": \"{{path.id}}\",\n  \"status\": \"available\"\n}",
+                        "scenarios": [
+                          {
+                            "name": "Out of Stock",
+                            "condition": "path.id === 'oos'",
+                            "statusCode": 404,
+                            "responseTemplate": "{\n  \"error\": \"Product {{path.id}} is out of stock.\"\n}"
+                          }
+                        ]
+                    },
+                    {
+                        "endpointId": "/orders",
+                        "method": "POST",
+                        "statusCode": 201,
+                        "responseTemplate": "{\n  \"message\": \"Order received\",\n  \"data\": {{body}}\n}"
+                    }], null, 2)}</pre>
+                  </div>
+                </section>
+              )}
+
+              {/* TEST API TAB */}
+              {activeTab === 'test' && (
+                <section className="test-api-section">
+                  <h2 className="section-title">Test Dynamic API Call</h2>
+                  <form onSubmit={handleTestApi} className="test-form">
+                    <div className="form-group-row">
+                      <div className="form-group method-selector">
+                        <select
+                          id="method"
+                          name="method"
+                          value={testConfig.method}
+                          onChange={handleTestConfigChange}
+                        >
+                          <option>GET</option>
+                          <option>POST</option>
+                          <option>PUT</option>
+                          <option>DELETE</option>
+                          <option>PATCH</option>
+                        </select>
+                      </div>
+                      <div className="form-group full-width url-input">
+                        <input
+                          type="text"
+                          id="endpointId"
+                          name="endpointId"
+                          value={testConfig.endpointId}
+                          onChange={handleTestConfigChange}
+                          placeholder="/api/users/123?filter=active"
+                          required
+                        />
+                      </div>
+                      <button
+                        type="button"
+                        className="button-icon button-secondary"
+                        onClick={() => setTestConfig(prev => ({ ...prev, showAdvanced: !prev.showAdvanced }))}
+                        title="Toggle advanced request options"
+                      >
+                        <ChevronDownIcon className={`icon-chevron ${testConfig.showAdvanced ? 'up' : 'down'}`} />
+                      </button>
+                    </div>
+
+                    {testConfig.showAdvanced && (
+                      <div className="advanced-options">
+                          <div className="form-group-row">
+                              <div className="form-group">
+                                  <label htmlFor="urlParams">Path Parameters (JSON)</label>
+                                  <textarea
+                                    id="urlParams"
+                                    name="urlParams"
+                                    value={testConfig.urlParams}
+                                    onChange={handleTestConfigChange}
+                                    rows="3"
+                                    placeholder='{"id": "123"}'
+                                  ></textarea>
+                                  <p className="help-text">Manually set path parameters for **&lbrace;&lbrace;path.param&rbrace;&rbrace;**.</p>
+                              </div>
+                              <div className="form-group">
+                                  <label htmlFor="queryParams">Query Parameters (JSON)</label>
+                                  <textarea
+                                    id="queryParams"
+                                    name="queryParams"
+                                    value={testConfig.queryParams}
+                                    onChange={handleTestConfigChange}
+                                    rows="3"
+                                    placeholder='{"limit": 10, "page": 1}'
+                                  ></textarea>
+                                  <p className="help-text">Manually set query parameters for **&lbrace;&lbrace;query.param&rbrace;&rbrace;** (overrides URL query).</p>
+                              </div>
+                          </div>
+
+                        {(testConfig.method === 'POST' || testConfig.method === 'PUT' || testConfig.method === 'PATCH') && (
+                          <div className="form-group full-width">
+                            <label htmlFor="bodyParams">Request Body (JSON)</label>
+                            <textarea
+                              id="bodyParams"
+                              name="bodyParams"
+                              value={testConfig.bodyParams}
+                              onChange={handleTestConfigChange}
+                              rows="5"
+                              placeholder='{"name": "John", "status": "active"}'
+                            ></textarea>
+                            <p className="help-text">Used for **&lbrace;&lbrace;body.field&rbrace;&rbrace;** or **&lbrace;&lbrace;body&rbrace;&rbrace;** placeholders.</p>
+                          </div>
+                        )}
+                      </div>
+                    )}
+
+                    <button type="submit" disabled={loading} className="button-primary submit-btn">
+                      {loading ? 'Sending Request...' : `Send ${testConfig.method} Request`}
+                    </button>
+                  </form>
+
+                  {testResults.length > 0 && (
+                    <div className="results-container">
+                      <h3 className="results-title">Test History (Last 5)</h3>
+                      <div className="results-list">
+                        {testResults.map(result => (
+                          <div key={result.id} className={`result-card status-${result.statusCode >= 400 ? 'error' : 'success'}`}>
+                            <div className="result-header">
+                              <span className="result-status-code">{result.statusCode}</span>
+                              <span className="result-latency">{result.latency}ms</span>
+                              <span className="result-url">
+                                <strong>{result.method}</strong> {API_BASE}{result.url.split('?')[0]}
+                              </span>
+                            </div>
+
+                            <div className="result-details">
+                              <details>
+                                <summary>Request Details</summary>
+                                <div className="request-info">
+                                  <p><strong>Path Params:</strong>
+                                    <code>{JSON.stringify(result.request.pathParams)}</code>
+                                  </p>
+                                  {Object.keys(result.request.queryParams).length > 0 && (
+                                    <p><strong>Query Params:</strong>
+                                      <code>{JSON.stringify(result.request.queryParams)}</code>
+                                    </p>
+                                  )}
+                                  {result.request.bodyParams && Object.keys(result.request.bodyParams).length > 0 && (
+                                    <p><strong>Body Params:</strong>
+                                      <code>{JSON.stringify(result.request.bodyParams)}</code>
+                                    </p>
+                                  )}
+                                </div>
+                              </details>
+
+                              <details open>
+                                <summary>Dynamic Response</summary>
+                                <pre>{JSON.stringify(result.success ? result.response : result.error, null, 2)}</pre>
+                              </details>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                </section>
+              )}
+            </div>
+          </div>
+        </div>
       
+      {/* FIXED FOOTER */}
       <footer className="footer">
-        <p>Dynamic Mock API Generator &copy; {new Date().getFullYear()}. Built with React.</p>
+        <p>Dynamic Mock API Generator &copy; {new Date().getFullYear()}.</p>
       </footer>
     </div>
   );
