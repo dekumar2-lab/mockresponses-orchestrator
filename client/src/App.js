@@ -75,8 +75,6 @@ const evaluateCondition = (condition, requestParams) => {
 
     try {
         // Use a function constructor for safe evaluation, isolating scope
-        // WARNING: This still relies on `eval`-like behavior and should be noted as a security risk
-        // in a real-world multi-user application, but is acceptable for a sandboxed development tool.
         const result = new Function('path', 'query', 'body', `return (${condition})`)(path, query, body);
         return !!result; // Coerce to boolean
     } catch (e) {
@@ -144,7 +142,7 @@ const mockBackend = {
 
   // Simulates deleting an endpoint
   deleteEndpoint: (id) => {
-    MOCK_ENDPOINTS = MOCK_ENDPOINTS.filter(e => e.internalId !== id);
+    MOCK_ENDPOINTS = MOCK_ENDPOINTS.filter(e => e.internalId === id);
     return true;
   },
 
@@ -253,7 +251,7 @@ const ScenarioEditor = ({ endpoint, setNewEndpoint }) => {
             ...prev,
             scenarios: [...prev.scenarios, {
                 name: `Scenario ${prev.scenarios.length + 1}`,
-                condition: `path.id === 'special'`,
+                condition: `path.id === 'error'`,
                 statusCode: 400,
                 delay: 0,
                 responseTemplate: '{"error": "Scenario failed: path.id is special"}'
@@ -725,39 +723,42 @@ const App = () => {
         }
 
         :root {
-          /* --- Professional Theme Variables --- */
-          --bg-page: #f5f7fa; /* Very light blue-gray background */
+          /* --- Dark Teal/Cyan Professional Theme Variables --- */
+          --bg-page: #f0f4f8; /* Very light cool gray background (outside floating elements) */
           --bg-card: #ffffff;
-          --bg-hover: #e8eaf6; /* Lighter background for hover */
-          --text-primary: #1f2937; /* Deep slate gray */
-          --text-secondary: #6b7280;
-          --text-muted: #9ca3af;
-          --border: #e0e7ff; /* Light blue/indigo border */
+          --bg-hover: #eef2f6; /* Lighter background for hover */
+          --text-primary: #1e293b; /* Dark Slate Blue */
+          --text-secondary: #475569;
+          --text-muted: #94a3b8; /* Faint blue-gray */
+          --border: #cbd5e1; /* Light blue-gray border */
           
-          /* --- Gradient Colors (Accent) --- */
-          --gradient-start: #4f46e5; /* Indigo */
-          --gradient-end: #9333ea; /* Violet */
+          /* --- Gradient Colors (Accent: Cyan to Teal) --- */
+          --gradient-start: #06b6d4; /* Cyan */
+          --gradient-end: #14b8a6; /* Teal */
           --accent: var(--gradient-start); /* Base accent color for text/borders */
 
           --success: #10b981;
           --warning: #f59e0b;
           --error: #ef4444;
-          --info: #3b82f6; /* Regular blue for info */
-          --shadow: 0 4px 12px rgba(0, 0, 0, 0.08); /* Smoother, larger shadow */
+          --info: #3b82f6;
+          --shadow: 0 8px 20px rgba(0, 0, 0, 0.1); /* Smoother, larger shadow */
           --radius-sm: 0.375rem;
           --radius: 0.75rem;
+          --radius-large: 1rem; /* New large radius for floating elements */
           --transition: all 0.2s ease-in-out;
-
-          /* Header/Footer Heights for fixed layout */
-          --header-height: 85px;
-          --footer-height: 60px;
+          
+          /* --- Layout Dimensions --- */
+          --header-height: 70px;
+          --footer-height: 50px;
+          --sidebar-width: 240px;
+          --layout-margin: 1rem; /* Gap for floating header/footer */
         }
         
-        /* --- LAYOUT AND SCROLLING --- */
+        /* --- LAYOUT AND SCROLLING (Fixed Sidebar Structure) --- */
 
         html, body, #root, .app-layout-wrapper {
             height: 100%;
-            overflow: hidden; /* Prevent body scroll */
+            overflow: hidden;
         }
 
         body {
@@ -765,469 +766,260 @@ const App = () => {
           color: var(--text-primary);
         }
 
-        .header, .footer {
-            width: 100%;
-            z-index: 100; /* Ensure visibility above content */
-            padding: 1.5rem 2rem;
-            color: white;
-            box-shadow: var(--shadow);
+        .app-layout-wrapper {
+            /* This div now acts as the bounding box for all fixed elements */
+            position: relative;
+            height: 100%;
+            padding: var(--layout-margin);
         }
 
+        /* FLOATING HEADER */
         .header {
             position: fixed;
-            top: 0;
-            left: 0;
+            top: var(--layout-margin);
+            left: var(--layout-margin);
+            right: var(--layout-margin);
             height: var(--header-height);
-            border-radius: 0; /* Remove radius for full width fixed element */
+            border-radius: var(--radius-large); /* Rounded corners all around */
+            z-index: 100;
+            padding: 0 2rem;
+            color: white;
+            box-shadow: var(--shadow);
             background: linear-gradient(90deg, var(--gradient-start) 0%, var(--gradient-end) 100%);
             display: flex;
             align-items: center;
-            justify-content: center;
-            text-align: center;
+            justify-content: flex-start; /* Left aligned for new style */
+            text-align: left;
         }
 
+        .header h1 {
+          font-size: 1.5rem; /* Slightly smaller for a cleaner look */
+          font-weight: 700;
+          margin: 0;
+        }
+
+        .header p {
+          color: rgba(255, 255, 255, 0.9);
+          font-size: 0.8rem;
+          margin-top: 0.1rem;
+          font-weight: 300;
+        }
+
+        /* FLOATING FOOTER */
         .footer {
             position: fixed;
-            bottom: 0;
-            left: 0;
+            bottom: var(--layout-margin);
+            left: var(--layout-margin);
+            right: var(--layout-margin);
             height: var(--footer-height);
-            border-radius: 0;
+            border-radius: var(--radius-large); /* Rounded corners all around */
+            z-index: 100;
             font-size: 0.85rem;
             background: linear-gradient(90deg, var(--gradient-end) 0%, var(--gradient-start) 100%);
             display: flex;
             align-items: center;
             justify-content: center;
+            color: white;
+            box-shadow: var(--shadow);
         }
 
-        .main-content-scroll {
-            /* Scrollable area */
+        /* MAIN CONTENT AREA CONTAINER (Sidebar + Content) */
+        .main-area {
+            display: flex;
+            flex-grow: 1;
+            /* Push area down past the fixed header */
+            margin-top: calc(var(--header-height) + var(--layout-margin));
+            /* Shrink area up past the fixed footer */
+            margin-bottom: var(--layout-margin);
+            position: relative;
+            height: calc(100vh - (var(--header-height) + var(--footer-height) + (var(--layout-margin) * 4)));
+        }
+        
+        /* FIXED SIDEBAR (Vertical Nav) */
+        .sidebar {
+            width: var(--sidebar-width);
+            height: 100%; /* Fill the height of main-area */
+            background: var(--bg-card);
+            border-radius: var(--radius-large);
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border);
+            padding: 1rem 0;
+            z-index: 50;
             overflow-y: auto;
-            height: 100%;
-            /* Add padding to prevent content from hiding behind fixed header/footer */
-            padding-top: var(--header-height);
-            padding-bottom: var(--footer-height);
-            -webkit-overflow-scrolling: touch;
+            flex-shrink: 0; /* Prevent shrinking */
+            margin-right: var(--layout-margin); /* Space between sidebar and content */
         }
 
-        .app-container {
-          max-width: 1200px;
-          margin: 0 auto;
-          padding: 2rem 1rem;
-        }
-
-
-        /* --- Header & Tabs --- */
-
-        .header h1 {
-          font-size: 1.8rem;
-          color: white;
-          margin-bottom: 0.25rem;
-        }
-
-        .header p {
-          color: rgba(255, 255, 255, 0.9);
-          font-size: 0.9rem;
-          margin-top: 0.1rem;
-        }
-
+        /* VERTICAL TABS STYLES */
         .tabs-nav {
-          display: flex;
-          margin-bottom: 2rem;
-          background: var(--bg-card);
-          padding: 0.25rem;
-          border-radius: var(--radius);
-          box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-          border: 1px solid var(--border);
+          display: block; /* Vertical layout */
+          padding: 0;
+          background: none;
+          border: none;
+          box-shadow: none;
         }
 
         .tabs-nav button {
-          flex-grow: 1;
+          width: 100%;
           padding: 0.75rem 1.5rem;
-          background: transparent;
-          border: none;
-          cursor: pointer;
-          font-weight: 600;
-          color: var(--text-secondary);
-          border-radius: var(--radius-sm);
+          text-align: left;
+          border-radius: 0;
+          border-left: 4px solid transparent; /* Indicator line */
           transition: var(--transition);
-        }
-
-        .tabs-nav button:hover:not(.active) {
-          background: var(--bg-hover);
+          font-size: 1rem;
+          background: transparent;
           color: var(--text-primary);
-        }
-
-        /* Gradient applied to ACTIVE tab button */
-        .tabs-nav button.active {
-          background: linear-gradient(45deg, var(--gradient-start) 0%, var(--gradient-end) 100%);
-          color: white;
-          box-shadow: 0 2px 8px rgba(79, 70, 229, 0.4);
-        }
-
-        .message {
-          padding: 1rem;
-          margin-bottom: 1.5rem;
-          border-radius: var(--radius);
           font-weight: 500;
         }
 
-        .message.success {
-          background-color: var(--success);
-          color: white;
-        }
-
-        .message.error {
-          background-color: var(--error);
-          color: white;
-        }
-
-        /* --- Buttons (Applying Gradient) --- */
-
-        button {
-          cursor: pointer;
-          transition: var(--transition);
-          font-weight: 600;
-          padding: 0.75rem 1.5rem;
-          border: 1px solid transparent;
-          border-radius: var(--radius-sm);
-          position: relative;
-          overflow: hidden;
-        }
-        
-        /* Base Gradient Style for Primary/Accent Buttons */
-        .button-primary {
-            background: linear-gradient(90deg, var(--gradient-start) 0%, var(--gradient-end) 100%);
-            color: white;
-            border: none;
-            box-shadow: 0 2px 6px rgba(79, 70, 229, 0.4);
-        }
-        
-        .button-primary:hover:not(:disabled) {
-            transform: translateY(-1px);
-            opacity: 0.9;
-            box-shadow: 0 4px 10px rgba(79, 70, 229, 0.6);
-        }
-
-        /* Secondary Button (Standard, no gradient) */
-        .button-secondary {
-          background-color: var(--bg-card);
-          color: var(--text-primary);
-          border: 1px solid var(--text-muted);
-        }
-
-        .button-secondary:hover:not(:disabled) {
-          background-color: var(--bg-hover);
-          border-color: var(--accent);
-          color: var(--accent);
-        }
-
-        .button-danger {
-          background-color: var(--error);
-          color: white;
-          box-shadow: 0 2px 6px rgba(239, 68, 68, 0.4);
-        }
-
-        .button-danger:hover:not(:disabled) {
-          background-color: #c73737;
-          transform: translateY(-1px);
-        }
-
-        .button-danger-sm {
-            padding: 0.3rem 0.6rem;
-            font-size: 0.8rem;
-        }
-
-        .button-icon {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            line-height: 1;
-        }
-
-        button:disabled {
-          opacity: 0.6;
-          cursor: not-allowed;
-          box-shadow: none !important;
-        }
-
-        .submit-btn {
-            width: 100%;
-            margin-top: 1rem;
-        }
-
-        .button-add-scenario {
-            margin-top: 1rem;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-        
-        /* --- Link-like elements (summary, links) using accent color --- */
-        .template-summary, .result-details summary {
-            cursor: pointer;
-            font-weight: 600;
-            color: var(--accent); /* Use base accent color */
-            margin: 0.5rem 0;
-            transition: color 0.2s;
-        }
-        
-        .template-summary:hover, .result-details summary:hover {
-            color: var(--gradient-end);
-        }
-
-
-        /* --- Section and Form Styling --- */
-
-        .section-title {
-          font-size: 1.5rem;
-          margin-bottom: 1.5rem;
-          padding-bottom: 0.5rem;
-          border-bottom: 2px solid var(--border);
-          color: var(--text-primary);
-        }
-
-        .endpoint-form, .test-form, .upload-section {
-          background: var(--bg-card);
-          padding: 2rem;
-          border-radius: var(--radius);
-          box-shadow: var(--shadow);
-          border: 1px solid var(--border);
-        }
-
-        .form-group {
-          margin-bottom: 1rem;
-          flex: 1;
-        }
-
-        .form-group label {
-          display: block;
-          margin-bottom: 0.5rem;
-          font-weight: 600;
-          color: var(--text-primary);
-        }
-
-        .form-group input, .form-group select, .form-group textarea {
-          width: 100%;
-          padding: 0.75rem;
-          border: 1px solid var(--border);
-          border-radius: var(--radius-sm);
-          background-color: var(--bg-card);
-          color: var(--text-primary);
-          transition: border-color 0.2s, box-shadow 0.2s;
-        }
-
-        .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
-          border-color: var(--accent);
-          box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
-          outline: none;
-        }
-
-        .form-group textarea {
-            resize: vertical;
-            min-height: 100px;
-            font-family: monospace;
-            font-size: 0.9rem;
-        }
-
-        .form-group-row {
-          display: flex;
-          gap: 1.5rem;
-          margin-bottom: 1rem;
-        }
-
-        .form-group-row .form-group {
-          margin-bottom: 0;
-        }
-
-        .full-width {
-          flex-basis: 100%;
-        }
-
-        .help-text {
-            font-size: 0.85rem;
-            color: var(--text-secondary);
-            margin-top: 0.5rem;
-            padding: 0.5rem;
+        .tabs-nav button:hover:not(.active) {
             background: var(--bg-hover);
-            border-radius: var(--radius-sm);
-            border-left: 3px solid var(--accent);
+            border-left-color: var(--text-muted);
         }
 
-        .help-text-sm {
-            font-size: 0.75rem;
-            color: var(--text-secondary);
-            margin-top: 0.25rem;
-        }
-        
-        /* --- Endpoint List --- */
-        
-        .endpoint-grid {
-          display: grid;
-          grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-          gap: 1.5rem;
-        }
-
-        .endpoint-card {
-          background: var(--bg-card);
-          padding: 1.5rem;
-          border-radius: var(--radius);
-          box-shadow: var(--shadow);
-          border: 1px solid var(--border);
-          position: relative;
-          display: flex;
-          flex-direction: column;
-        }
-
-        .scenario-count {
-            font-size: 0.85rem;
+        .tabs-nav button.active {
+            background: var(--bg-hover); /* Keep background subtle */
             color: var(--accent);
-            font-weight: 600;
-            margin-bottom: 0.5rem;
-            display: flex;
-            align-items: center;
-            gap: 0.25rem;
+            font-weight: 700;
+            border-left-color: var(--accent); /* Strong accent line */
+            box-shadow: none;
         }
 
-        .endpoint-id {
-          font-size: 1.25rem;
-          word-break: break-all;
-          margin-bottom: 0.5rem;
+        /* SCROLLABLE MAIN CONTENT AREA */
+        .main-content-scroll {
+            flex-grow: 1;
+            overflow-y: auto;
+            padding: 2rem; /* Inner padding for content */
+            background: var(--bg-card);
+            border-radius: var(--radius-large);
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border);
         }
 
-        .method-tag {
-          position: absolute;
-          top: 0;
-          right: 0;
-          padding: 0.3rem 0.6rem;
-          border-radius: 0 var(--radius-sm) 0 var(--radius-sm);
-          color: white;
-          font-weight: 700;
-          font-size: 0.8rem;
-        }
-
+        /* --- Other Component Styles (Minified) --- */
+        .message { padding: 1rem; margin-bottom: 1.5rem; border-radius: var(--radius); font-weight: 500; }
+        .message.success { background-color: var(--success); color: white; }
+        .message.error { background-color: var(--error); color: white; }
+        button { cursor: pointer; transition: var(--transition); font-weight: 600; padding: 0.75rem 1.5rem; border: 1px solid transparent; border-radius: var(--radius-sm); position: relative; overflow: hidden; }
+        .button-primary { background: linear-gradient(90deg, var(--gradient-start) 0%, var(--gradient-end) 100%); color: white; border: none; box-shadow: 0 2px 6px rgba(6, 182, 212, 0.4); }
+        .button-primary:hover:not(:disabled) { transform: translateY(-1px); opacity: 0.9; box-shadow: 0 4px 10px rgba(6, 182, 212, 0.6); }
+        .button-secondary { background-color: var(--bg-card); color: var(--text-primary); border: 1px solid var(--text-muted); }
+        .button-secondary:hover:not(:disabled) { background-color: var(--bg-hover); border-color: var(--accent); color: var(--accent); }
+        .button-danger { background-color: var(--error); color: white; box-shadow: 0 2px 6px rgba(239, 68, 68, 0.4); }
+        .button-danger:hover:not(:disabled) { background-color: #c73737; transform: translateY(-1px); }
+        .button-danger-sm { padding: 0.3rem 0.6rem; font-size: 0.8rem; }
+        .button-icon { display: inline-flex; align-items: center; justify-content: center; line-height: 1; }
+        button:disabled { opacity: 0.6; cursor: not-allowed; box-shadow: none !important; }
+        .submit-btn { width: 100%; margin-top: 1rem; }
+        .button-add-scenario { margin-top: 1rem; display: flex; align-items: center; gap: 0.5rem; }
+        .template-summary, .result-details summary { cursor: pointer; font-weight: 600; color: var(--accent); margin: 0.5rem 0; transition: color 0.2s; }
+        .template-summary:hover, .result-details summary:hover { color: var(--gradient-end); }
+        .section-title { font-size: 1.5rem; margin-bottom: 1.5rem; padding-bottom: 0.5rem; border-bottom: 2px solid var(--border); color: var(--text-primary); }
+        .endpoint-form, .test-form, .upload-section { background: var(--bg-card); padding: 2rem; border-radius: var(--radius); box-shadow: var(--shadow); border: 1px solid var(--border); }
+        .form-group { margin-bottom: 1rem; flex: 1; }
+        .form-group label { display: block; margin-bottom: 0.5rem; font-weight: 600; color: var(--text-primary); }
+        .form-group input, .form-group select, .form-group textarea { width: 100%; padding: 0.75rem; border: 1px solid var(--border); border-radius: var(--radius-sm); background-color: var(--bg-card); color: var(--text-primary); transition: border-color 0.2s, box-shadow 0.2s; }
+        .form-group input:focus, .form-group select:focus, .form-group textarea:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(6, 182, 212, 0.1); outline: none; }
+        .form-group textarea { resize: vertical; min-height: 100px; font-family: monospace; font-size: 0.9rem; }
+        .form-group-row { display: flex; gap: 1.5rem; margin-bottom: 1rem; }
+        .form-group-row .form-group { margin-bottom: 0; }
+        .full-width { flex-basis: 100%; }
+        .help-text { font-size: 0.85rem; color: var(--text-secondary); margin-top: 0.5rem; padding: 0.5rem; background: var(--bg-hover); border-radius: var(--radius-sm); border-left: 3px solid var(--accent); }
+        .help-text-sm { font-size: 0.75rem; color: var(--text-secondary); margin-top: 0.25rem; }
+        .endpoint-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 1.5rem; }
+        .endpoint-card { background: var(--bg-card); padding: 1.5rem; border-radius: var(--radius); box-shadow: var(--shadow); border: 1px solid var(--border); position: relative; display: flex; flex-direction: column; }
+        .scenario-count { font-size: 0.85rem; color: var(--accent); font-weight: 600; margin-bottom: 0.5rem; display: flex; align-items: center; gap: 0.25rem; }
+        .endpoint-id { font-size: 1.25rem; word-break: break-all; margin-bottom: 0.5rem; }
+        .method-tag { position: absolute; top: 0; right: 0; padding: 0.3rem 0.6rem; border-radius: 0 var(--radius-sm) 0 var(--radius-sm); color: white; font-weight: 700; font-size: 0.8rem; }
         .method-tag[data-method="GET"] { background: var(--success); }
         .method-tag[data-method="POST"] { background: var(--info); }
         .method-tag[data-method="PUT"], .method-tag[data-method="PATCH"] { background: var(--warning); }
         .method-tag[data-method="DELETE"] { background: var(--error); }
-
-        .details-row {
-          display: flex;
-          gap: 1rem;
-          margin-bottom: 1rem;
-          font-size: 0.9rem;
-          color: var(--text-secondary);
-        }
-
-        .template-preview {
-          background: var(--bg-page);
-          padding: 1rem;
-          border-radius: var(--radius-sm);
-          white-space: pre-wrap;
-          word-break: break-all;
-          font-size: 0.85rem;
-          max-height: 200px;
-          overflow-y: auto;
-          border: 1px dashed var(--border);
-          margin-top: 0.5rem;
-        }
-
-        .actions {
-          display: flex;
-          gap: 0.5rem;
-          margin-top: 1rem;
-        }
-
-        /* --- Scenario Editor Styles --- */
-        .scenario-editor {
-            border-top: 2px solid var(--border);
-            padding-top: 1.5rem;
-            margin-top: 1.5rem;
-        }
+        .details-row { display: flex; gap: 1rem; margin-bottom: 1rem; font-size: 0.9rem; color: var(--text-secondary); }
+        .template-preview { background: var(--bg-page); padding: 1rem; border-radius: var(--radius-sm); white-space: pre-wrap; word-break: break-all; font-size: 0.85rem; max-height: 200px; overflow-y: auto; border: 1px dashed var(--border); margin-top: 0.5rem; }
+        .actions { display: flex; gap: 0.5rem; margin-top: 1rem; }
+        .scenario-editor { border-top: 2px solid var(--border); padding-top: 1.5rem; margin-top: 1.5rem; }
+        .scenario-card { border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 1rem; margin-bottom: 1rem; background: var(--bg-page); box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
+        .scenario-name-input { color: var(--accent); }
+        .result-status-code { font-weight: 700; padding: 0.25rem 0.5rem; border-radius: var(--radius-sm); color: white; background: linear-gradient(90deg, var(--gradient-start) 0%, var(--gradient-end) 100%); }
+        .result-card.status-error .result-status-code { background: var(--error); }
+        .result-details summary { color: var(--accent); }
         
-        .scenario-card {
-            border: 1px solid var(--border);
-            border-radius: var(--radius-sm);
-            padding: 1rem;
-            margin-bottom: 1rem;
-            background: var(--bg-page);
-            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
-        }
-        
-        .scenario-name-input {
-            color: var(--accent);
-        }
-
-        /* --- Test API Section --- */
-
-        .result-status-code {
-            font-weight: 700;
-            padding: 0.25rem 0.5rem;
-            border-radius: var(--radius-sm);
-            color: white;
-            /* Use accent gradient for success status */
-            background: linear-gradient(90deg, var(--gradient-start) 0%, var(--gradient-end) 100%);
-        }
-        
-        .result-card.status-error .result-status-code {
-            background: var(--error);
-        }
-        
-        .result-details summary {
-            color: var(--accent);
-        }
-
-        /* Responsive adjustments */
+        /* Mobile adjustments for the new layout */
         @media (max-width: 768px) {
-          .app-container {
-            padding: 1rem 0.5rem;
-          }
-          .header h1 {
-            font-size: 1.5rem;
-          }
-          .header p {
-             display: none;
-          }
-          .header {
-             height: 60px;
-             --header-height: 60px;
-          }
-          .main-content-scroll {
-             padding-top: var(--header-height);
-          }
-          .form-group-row {
-            flex-direction: column;
-            gap: 0;
-          }
-          .tabs-nav {
-            flex-wrap: wrap;
-          }
-          .tabs-nav button {
-            flex: 1 1 50%;
-            margin: 0.2rem;
-          }
-          .test-form .form-group-row {
-            flex-direction: row; /* Keep test row horizontal */
-            flex-wrap: nowrap;
-          }
-          .test-form .method-selector {
-             flex: 0 0 100px;
-          }
+            .app-layout-wrapper {
+                padding: 0.5rem; /* Reduce overall margin on mobile */
+            }
+            .header {
+                height: 60px;
+                --header-height: 60px;
+                padding: 0 1rem;
+            }
+            .header p { display: none; }
+            .header h1 { font-size: 1.25rem; }
+
+            .main-area {
+                flex-direction: column; /* Stack sidebar and content */
+                margin-top: calc(var(--header-height) + 0.5rem);
+                margin-bottom: 0;
+                height: auto;
+            }
+
+            .sidebar {
+                position: static; /* Unfix sidebar */
+                width: 100%;
+                height: auto;
+                margin: 0 0 0.5rem 0; /* Margin only at the bottom */
+                padding: 0.5rem 0;
+            }
+            
+            /* Change vertical tabs back to horizontal wrap on mobile */
+            .tabs-nav {
+                display: flex;
+                flex-wrap: wrap;
+            }
+            
+            .tabs-nav button {
+                flex-grow: 1;
+                flex-basis: 48%; /* Two buttons per row */
+                text-align: center;
+                border-left: none;
+                border-radius: var(--radius-sm);
+                margin: 0.1rem 0.2rem;
+            }
+
+            .tabs-nav button.active {
+                border-left: none;
+                border: 2px solid var(--accent); /* Use border instead of left line */
+            }
+
+            .main-content-scroll {
+                margin-left: 0;
+                border-radius: var(--radius-large);
+                padding: 1rem;
+            }
+            .footer {
+                --footer-height: 40px;
+                height: var(--footer-height);
+                font-size: 0.75rem;
+            }
         }
       `}</style>
 
-      {/* FIXED HEADER */}
+      {/* FLOATING HEADER */}
       <header className="header">
         <div>
-            <h1>Dynamic Mock API Generator</h1>
-            <p>Define dynamic endpoints and test them in real-time.</p>
+            <h1>Mock API Environment</h1>
+            <p>Define and test dynamic REST API endpoints instantly.</p>
         </div>
       </header>
       
-      {/* SCROLLABLE MAIN CONTENT */}
-      <div className="main-content-scroll">
-        <div className="app-container">
+      {/* MAIN AREA: SIDEBAR + CONTENT CONTAINER */}
+      <div className="main-area">
 
-            <div className="tabs-nav">
+        {/* FIXED SIDEBAR (VERTICAL NAVIGATION) */}
+        <aside className="sidebar">
+            <nav className="tabs-nav">
               <button
                 className={activeTab === 'endpoints' ? 'active' : ''}
                 onClick={() => setActiveTab('endpoints')}
@@ -1264,8 +1056,11 @@ const App = () => {
               >
                 Upload Schema
               </button>
-            </div>
+            </nav>
+        </aside>
 
+        {/* SCROLLABLE MAIN CONTENT AREA */}
+        <div className="main-content-scroll">
             {message && <div className={`message ${message.startsWith('Error') ? 'error' : 'success'}`}>{message}</div>}
 
             <div className="tab-content">
@@ -1597,10 +1392,10 @@ const App = () => {
                 </section>
               )}
             </div>
-          </div>
         </div>
+      </div>
       
-      {/* FIXED FOOTER */}
+      {/* FLOATING FOOTER */}
       <footer className="footer">
         <p>Dynamic Mock API Generator &copy; {new Date().getFullYear()}.</p>
       </footer>
