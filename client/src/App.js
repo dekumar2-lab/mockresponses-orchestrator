@@ -717,6 +717,12 @@ const App = () => {
           --radius-sm: 0.375rem;
           --radius: 0.75rem;
           --transition: all 0.2s ease-in-out;
+          
+          /* --- Gradient Colors --- */
+          --gradient-start-header: #3b82f6; /* Accent Blue */
+          --gradient-end-header: #8b5cf6; /* Info Violet */
+          --gradient-start-footer: #8b5cf6; /* Info Violet */
+          --gradient-end-footer: #3b82f6; /* Accent Blue */
         }
 
         body {
@@ -736,15 +742,21 @@ const App = () => {
         .header {
           text-align: center;
           margin-bottom: 2rem;
+          /* New Gradient Styles */
+          padding: 2.5rem 2rem;
+          color: white;
+          border-radius: var(--radius);
+          background: linear-gradient(135deg, var(--gradient-start-header) 0%, var(--gradient-end-header) 100%);
+          box-shadow: var(--shadow);
         }
 
         .header h1 {
           font-size: 2.5rem;
-          color: var(--accent-hover);
+          color: white; /* Ensure heading color is white on gradient */
         }
 
         .header p {
-          color: var(--text-secondary);
+          color: rgba(255, 255, 255, 0.8);
           margin-top: 0.5rem;
         }
 
@@ -1290,6 +1302,19 @@ const App = () => {
             font-size: 0.75rem;
             overflow-x: auto;
         }
+        
+        /* --- Footer Styling --- */
+        .footer {
+            margin-top: 3rem;
+            padding: 1.5rem 1rem;
+            text-align: center;
+            border-radius: var(--radius);
+            color: white;
+            font-size: 0.9rem;
+            font-weight: 500;
+            background: linear-gradient(135deg, var(--gradient-start-footer) 0%, var(--gradient-end-footer) 100%);
+            box-shadow: var(--shadow);
+        }
 
         /* Responsive adjustments */
         @media (max-width: 768px) {
@@ -1691,6 +1716,10 @@ const App = () => {
           </section>
         )}
       </div>
+      
+      <footer className="footer">
+        <p>Dynamic Mock API Generator &copy; {new Date().getFullYear()}. Built with React.</p>
+      </footer>
     </div>
   );
 }
